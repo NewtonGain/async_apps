@@ -37,9 +37,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(title: Text("API"),
+        centerTitle: true,
+        ),
         backgroundColor: Colors.teal,
       body: ListView.builder(
-        itemCount: _jsonPost.length,itemBuilder: (context,index){
+        itemCount: _jsonPost.length,
+        itemBuilder: (context,index){
       final post=_jsonPost[index];
       return Center(child: Text("Title: ${post["title"]}\n body:${post["body"]}\n\n"));
     },),
