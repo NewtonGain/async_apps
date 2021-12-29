@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-void main()=>runApp(MyApp());
+void main()=>runApp(const MyApp());
 class MyApp extends StatefulWidget {
   const MyApp({ Key? key }) : super(key: key);
 
@@ -11,42 +11,39 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var stringResponse;
-  Map? mapResponse;
-  Future getData()async{
-    http.Response response;
-    response=await http.get(
-      Uri.parse("https://reqres.in/api/users/2"),
-    );
-    if(response.statusCode==200){
+  var _jsonPost=[];
+  Future fetchData() async{
+    try{
+      final response =await http.get(Uri.parse("http://jsonplaceholder.typicode.com/posts"),);
+      final jsonData= jsonDecode(response.body)as List;
       setState(() {
-        mapResponse=jsonDecode(response.body);
+        _jsonPost=jsonData;
       });
     }
+    catch(err){
+      // ignore: avoid_print
+      print("This is the $err error");
+    }
   }
-  
   @override
   void initState() {
-    
+
     super.initState();
-    getData();
+    fetchData();
   }
+
   @override
+
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(body: Center(
-      child: Container(
-        width: 300,
-        height: 300,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Colors.blueGrey,
-        ),
-        child: mapResponse==null? Text('The data is loading'):
-        Center(
-          child: Text("${mapResponse?["data"].toString()}",
-          textAlign: TextAlign.center,),
-        )
-        ),
-        ),
-        ),
-        );
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.teal,
+      body: ListView.builder(
+        itemCount: _jsonPost.length,itemBuilder: (context,index){
+      final post=_jsonPost[index];
+      return Center(child: Text("Title: ${post["title"]}\n body:${post["body"]}\n\n"));
+    },),
+    ),
+    );
   }
-}
+} 
